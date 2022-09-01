@@ -1,0 +1,69 @@
+{% load static %}
+
+<link href="{% static 'layui/css/layui.css' %}" rel="stylesheet" type="text/css">
+<script src="{% static 'layui/layui.js' %}"></script>
+<script src='{% static "js/jquery-3.3.1.min.js" %}'></script>
+
+<hr/>
+
+    
+<form class="layui-form" action="/comment/show_form/" method="post">
+    <input name="Target" type="hidden" value="{{ target }}" />
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">昵称</label>
+    <div class="layui-input-block">
+        <input type="text" name="Nickname" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">Email</label>
+    <div class="layui-input-block">
+        <input type="text" name="Email" required  lay-verify="required" placeholder="请输入Email" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">网站</label>
+    <div class="layui-input-block">
+        <input type="text" name="Website" required  lay-verify="required" placeholder="请输入网站" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+    <label class="layui-form-label">内容</label>
+    <div class="layui-input-block">
+        <input type="text" name="Content" required  lay-verify="required" placeholder="请输入内容" autocomplete="off" class="layui-input">
+    </div>
+    </div>
+
+    <div class="layui-form-item">
+    <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+    </div>
+    </div>
+</form>
+
+<script>
+    layui.use('form', function(){
+      var form = layui.form;
+      //提交
+      form.on('submit(formDemo)', function(data) {
+          var target = document.getElementsByName("Target").values()
+          var nickname = data.field.Nickname;
+          var email = data.field.Email;
+          var website = data.field.Website;
+          var content = data.field.Content;
+
+          console.log(target, nickname, email, website, content)
+
+          layer.msg(data.msg, {icon:1,time:1000}, function(){
+            var index = parent.layer.getFrameIndex(window.name);
+            // parent.location.reload(); //刷新父页面
+            parent.layer.close(index);
+          });
+      });
+    });
+</script>

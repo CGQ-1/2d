@@ -1,0 +1,129 @@
+<hr/>
+{% load static %}
+  
+{% block extra_head %}
+  <link href="{% static 'layui/css/layui.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'layui/layui.js' %}"></script>
+  <script src='{% static "js/jquery-3.3.1.min.js" %}'></script>
+  <script type="text/javascript" src='{% static "javascript/block_form.js"%}'></script>
+{% endblock %}
+
+<div>
+  {% if code == 1 %}
+    <a class="layui-icon layui-icon-reply-fill" onclick="show_form()" style="font-size: 25px;"></a>
+    <input id="target" type="hidden" value="{{ target }}" />
+  {% elif code == 200 %}
+    <form class="layui-form">
+      <input name="target" type="hidden" value="{{ target }}" />
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">昵称</label>
+        <div class="layui-input-block">
+            <input type="text" name="nickname" required  lay-verify="required" placeholder="请输入昵称" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+
+<!--      <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">Email</label>-->
+<!--        <div class="layui-input-block">-->
+<!--            <input type="text" name="email" onchange="check_field()" required  lay-verify="required" placeholder="请输入Email" autocomplete="off" class="layui-input">-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">网站</label>-->
+<!--        <div class="layui-input-block">-->
+<!--            <input type="text" name="website" onchange="check_field()" required  lay-verify="required" placeholder="请输入网站" autocomplete="off" class="layui-input">-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <input type="text" name="content" required  lay-verify="required" placeholder="请输入内容" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" onclick="form_summit()" lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+  {% endif %}
+
+  <script>
+    function show_form() {
+    var target = document.getElementById("target").value
+    console.log(target)
+    layer.open({
+      type:2,
+      skin:'layui-layer-lan',
+      title:'评论',
+      fix:false,
+      shadeClose: true,
+      maxmin: true,
+      area:['600px','300px'],
+      content: '/comment/show_form/?{{ target }}',
+    });
+  }
+    layui.use('form', function () {
+        var form = layui.form;
+        //提交
+        form.on('submit(formDemo)', function (data) {
+            var target = document.getElementsByName("target")[0].value
+            var nickname = data.field.nickname;
+            // var email = data.field.email;
+            // var website = data.field.website;
+            var content = data.field.content;
+
+            // console.log(target, nickname, email, website, content)
+            $.ajax({
+                url: "/comment/show_form/",
+                method: "post",
+                data: {
+                    "target": target,
+                    "nickname": nickname,
+                    // "email": email,
+                    // "website": website,
+                    "content": content
+                },
+                success: function (res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg);
+                        parent.location.reload()
+                    } else {
+                        layer.msg("提交未成功！")
+                    }
+                },
+                // error: function() {
+                //
+                // }
+            })
+            return false;
+        });
+    });
+  </script>
+
+
+  <!-- 前端展示评论部分 -->
+<!--  <ul class="list-group">-->
+<!--      {% for comment in comment_list %}-->
+<!--      <li class="list-group-item">-->
+<!--        <div class="nickname">-->
+<!--          <a href="{{ comment.website }}">{{ comment.nickname }}</a>-->
+<!--             <span>{{ comment.created_time }}</span>-->
+<!--        </div>-->
+<!--        <div class="comment-content">-->
+<!--          {% autoescape off %}-->
+<!--          {{ comment.content }}-->
+<!--          {% endautoescape %}-->
+<!--        </div>-->
+<!--      {% endfor%}-->
+<!--      </li>-->
+<!--  </ul>-->
+</div>
+
+
+
